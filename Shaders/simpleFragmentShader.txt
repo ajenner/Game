@@ -1,0 +1,21 @@
+#version 330
+
+vec4 fogColor = vec4(0.2, 0.2, 0.2, 0.5);
+float dist = 0;
+float fogFactor = 0;
+uniform float FogDensity;
+
+in vec3 eyepos;
+in vec4 fragment_colour;
+in vec2 tex_points;
+
+uniform sampler2D tex;
+
+void main(){
+    dist = abs(eyepos.z);
+    fogFactor = 1.0 /exp(dist * FogDensity);
+    fogFactor = clamp( fogFactor, 0.0, 1.0 );
+    vec4 final_colour = (fogColor * (1 - fogFactor)) + (fragment_colour * fogFactor);
+    gl_FragColor = texture(tex, tex_points) * final_colour;
+}
+
